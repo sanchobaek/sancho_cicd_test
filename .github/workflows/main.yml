@@ -1,0 +1,35 @@
+# 워크플로 이름
+name: Simple CI
+
+# 언제 실행할지 설정 (main 브랜치에 push하거나 pull request할 때)
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# 실행할 작업들
+jobs:
+  # 작업 이름
+  build:
+    # 어떤 운영체제에서 실행할지
+    runs-on: ubuntu-latest
+    
+    # 실행 단계들
+    steps:
+    # 1. 코드 체크아웃
+    - uses: actions/checkout@v4
+    
+    # 2. Node.js 설정 (예시)
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    # 3. 의존성 설치
+    - name: Install dependencies
+      run: npm install
+    
+    # 4. 테스트 실행
+    - name: Run tests
+      run: npm test
