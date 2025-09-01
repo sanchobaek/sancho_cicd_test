@@ -10,7 +10,7 @@ permissions:
 
 env:
   AWS_REGION: ap-northeast-2
-  ECR_REPOSITORY: my-app
+  ECR_REPOSITORY: my-node-app
 
 jobs:
   deploy:
