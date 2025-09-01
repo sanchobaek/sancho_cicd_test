@@ -1,0 +1,63 @@
+name: Build and Push to ECR
+
+on:
+  push:
+    branches: [ main ]
+
+# OIDC 토큰 권한 설정 (필수!)
+permissions:
+  id-token: write   # GitHub OIDC 토큰 요청
+  contents: read    # 코드 읽기 권한
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 1. 코드 체크아웃
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    # 2. AWS 자격 증명 구성 (OIDC 사용)
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        role-session-name: GitHubActions-ECR
+        aws-region: ${{ secrets.AWS_REGION }}
+    
+    # 3. AWS 연결 테스트
+    - name: Test AWS connection
+      run: |
+        echo "현재 AWS 자격 증명 확인:"
+        aws sts get-caller-identity
+    
+    # 4. ECR 로그인
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+    
+    # 5. Docker 이미지 빌드 및 태그
+    - name: Build Docker image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        echo "Docker 이미지 빌드 중..."
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        echo "빌드 완료!"
+    
+    # 6. ECR에 이미지 푸시
+    - name: Push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        echo "ECR에 이미지 푸시 중..."
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        echo "푸시 완료!"
+        echo "이미지 URI: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
