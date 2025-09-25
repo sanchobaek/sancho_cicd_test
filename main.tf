@@ -33,8 +33,8 @@ resource "aws_lambda_function" "test_function" {
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
   tags = {
-    Environment = "test"
-    Project     = "cas3135"
+    role = "sancho-ecr-cicd"
+    username     = "sancho"
   }
 }
 
