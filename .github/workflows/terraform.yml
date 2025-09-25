@@ -23,7 +23,7 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: arn:aws:iam::975049962487:role/cas3135-2025000001-gha-role
+        role-to-assume: arn:aws:iam::975049962487:role/sancho-ecr-cicd
         aws-region: ${{ env.AWS_REGION }}
         role-session-name: github-actions-terraform
     
