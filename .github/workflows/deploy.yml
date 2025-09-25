@@ -4,6 +4,11 @@ on:
   push:
     branches: [ main, dev ]
 
+# 동시 실행 방지 설정 추가
+concurrency:
+  group: terraform-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   id-token: write
   contents: read
@@ -35,7 +40,7 @@ jobs:
           -backend-config="bucket=cas3135-2025-tfstates" \
           -backend-config="key=cas3135-2025000001/terraform.tfstate" \
           -backend-config="region=${{ env.AWS_REGION }}" \
-          -backend-config="dynamodb_table=cas3135-terraform-locks"
+          -backend-config="dynamodb_table=sancho-terraform-locks"
     
     - name: Terraform Plan
       run: terraform plan
