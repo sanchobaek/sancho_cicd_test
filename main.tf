@@ -25,7 +25,7 @@ data "archive_file" "lambda_zip" {
 # Lambda 함수 생성
 resource "aws_lambda_function" "test_function" {
   filename         = "lambda-function.zip"
-  function_name    = "sancho-test-lambda2"
+  function_name    = "sancho-test-lambda1"
   role            = "arn:aws:iam::975049962487:role/sancho_lambda_terraform"
   handler         = "index.handler"
   runtime         = "nodejs18.x"
