@@ -25,8 +25,8 @@ data "archive_file" "lambda_zip" {
 # Lambda 함수 생성
 resource "aws_lambda_function" "test_function" {
   filename         = "lambda-function.zip"
-  function_name    = "cas3135-2025000001-test-lambda"
-  role            = "arn:aws:iam::975049962487:role/cas3135-2025000001-lambda-exec"
+  function_name    = "sancho-test-lambd2a"
+  role            = "arn:aws:iam::975049962487:role/sancho-ecr-cicd"
   handler         = "index.handler"
   runtime         = "nodejs18.x"
   timeout         = 60
