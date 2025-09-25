@@ -25,17 +25,17 @@ data "archive_file" "lambda_zip" {
 # Lambda 함수 생성
 resource "aws_lambda_function" "test_function" {
   filename         = "lambda-function.zip"
-  function_name    = "sancho-test-lambda2"
+  function_name    = "sancho-test-lambda"
   role            = "arn:aws:iam::975049962487:role/sancho_lambda_terraform"
   handler         = "index.handler"
   runtime         = "nodejs18.x"
   timeout         = 60
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
-  tags = {
-    role = "sancho-ecr-cicd"
-    username     = "sancho"
-  }
+#   tags = {
+#     role = "sancho-ecr-cicd"
+#     username     = "sancho"
+#   }
 }
 
 # Lambda 함수 출력
